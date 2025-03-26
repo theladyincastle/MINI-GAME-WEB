@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mole Whack Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+        }
+        .game-container {
+            width: 400px;
+            margin: auto;
+        }
+        canvas {
+            background: #a0d468; /* Warna hijau seperti rumput */
+            display: block;
+            margin: auto;
+            cursor: pointer;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐭🔨 Mole Whack Game</h1>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <p>Score: <span id="score">0</span></p>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let score = 0;
+        let moleX, moleY;
+        let gameInterval;
+        let isMoleActive = false;
+
+        function drawMole() {
+            if (isMoleActive) return; // Jangan spawn lagi kalau masih ada
+            
+            const moleImage = new Image();
+            moleImage.src = "mouse.webp";
+            moleImage.onload = function () {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#a0d468"; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                moleX = Math.floor(Math.random() * 300);
+                moleY = Math.floor(Math.random() * 300);
+                ctx.drawImage(moleImage, moleX, moleY, 100, 100);
+                isMoleActive = true; // Tikus muncul, jangan spawn baru dulu
+                
+                // Tikus hilang setelah beberapa detik
+                setTimeout(() => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "#a0d468";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    isMoleActive = false;
+                }, 1000); // Tikus hilang setelah 1 detik
+            };
+        }
+        
+        function startGame() {
+            score = 0;
+            document.getElementById("score").innerText = score;
+            gameInterval = setInterval(drawMole, 2000); // Ganti jadi 2 detik
+            setTimeout(() => clearInterval(gameInterval), 30000); // Game lasts 30s
+        }
+        
+        canvas.addEventListener("click", function (event) {
+            if (!isMoleActive) return; // Klik hanya dihitung kalau tikus muncul
+            
+            const clickX = event.offsetX;
+            const clickY = event.offsetY;
+            if (
+                clickX > moleX && clickX < moleX + 100 &&
+                clickY > moleY && clickY < moleY + 100
+            ) {
+                score++;
+                document.getElementById("score").innerText = score;
+                isMoleActive = false; // Biar nggak langsung muncul lagi
+                drawMole();
+            }
+        });
+    </script>
+</body>
+</html>

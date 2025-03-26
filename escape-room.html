@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: black;
+            color: white;
+        }
+        canvas {
+            background-color: dimgray;
+            display: block;
+            margin: auto;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔦 Escape Room - Temukan Kunci & Keluar!</h1>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = 600;
+        canvas.height = 400;
+
+        let player = { x: 50, y: 180, width: 30, height: 30, speed: 5 };
+        let key = { x: Math.random() * 500 + 50, y: Math.random() * 300 + 50, width: 20, height: 20, found: false };
+        let door = { x: 550, y: 180, width: 40, height: 60 };
+        let walls = [
+            { x: 100, y: 100, width: 200, height: 20 },
+            { x: 300, y: 200, width: 200, height: 20 },
+            { x: 150, y: 300, width: 250, height: 20 }
+        ];
+        let gameOver = false;
+
+        function drawPlayer() {
+            ctx.fillStyle = "blue";
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function drawKey() {
+            if (!key.found) {
+                ctx.fillStyle = "gold";
+                ctx.fillRect(key.x, key.y, key.width, key.height);
+            }
+        }
+
+        function drawDoor() {
+            ctx.fillStyle = "brown";
+            ctx.fillRect(door.x, door.y, door.width, door.height);
+        }
+
+        function drawWalls() {
+            ctx.fillStyle = "gray";
+            walls.forEach(wall => {
+                ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+            });
+        }
+
+        function checkCollision(obj1, obj2) {
+            return (
+                obj1.x < obj2.x + obj2.width &&
+                obj1.x + obj1.width > obj2.x &&
+                obj1.y < obj2.y + obj2.height &&
+                obj1.y + obj1.height > obj2.y
+            );
+        }
+
+        function update() {
+            if (gameOver) {
+                ctx.fillStyle = "white";
+                ctx.font = "30px Arial";
+                ctx.fillText("🎉 You Escaped! Refresh to Play Again", 100, 200);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawWalls();
+            drawPlayer();
+            drawKey();
+            drawDoor();
+
+            if (checkCollision(player, key)) {
+                key.found = true;
+            }
+
+            if (key.found && checkCollision(player, door)) {
+                gameOver = true;
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        window.addEventListener("keydown", function(e) {
+            let nextX = player.x;
+            let nextY = player.y;
+
+            if (e.key === "ArrowUp") nextY -= player.speed;
+            if (e.key === "ArrowDown") nextY += player.speed;
+            if (e.key === "ArrowLeft") nextX -= player.speed;
+            if (e.key === "ArrowRight") nextX += player.speed;
+
+            let collision = walls.some(wall => checkCollision({ x: nextX, y: nextY, width: player.width, height: player.height }, wall));
+
+            if (!collision) {
+                player.x = nextX;
+                player.y = nextY;
+            }
+        });
+
+        update();
+    </script>
+</body>
+</html>

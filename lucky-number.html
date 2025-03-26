@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Number Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-green-100">
+    <div class="game-container">
+        <h1 class="text-2xl font-bold">Tebak Angka 🎯</h1>
+        <p class="text-lg">Tebak angka antara 1 hingga 10</p>
+        <input type="number" id="guess" class="border px-2 py-1 rounded" min="1" max="10">
+        <button onclick="checkGuess()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tebak</button>
+        <p id="result" class="text-lg font-bold mt-2"></p>
+    </div>
+
+    <script>
+        let luckyNumber = Math.floor(Math.random() * 10) + 1;
+        
+        function checkGuess() {
+            let guess = document.getElementById("guess").value;
+            let resultText = document.getElementById("result");
+            
+            if (guess == luckyNumber) {
+                resultText.textContent = "🎉 Selamat! Angka yang benar adalah " + luckyNumber + "! 🎉";
+                resultText.classList.add("text-green-600");
+            } else {
+                resultText.textContent = "❌ Salah! Coba lagi!";
+                resultText.classList.remove("text-green-600");
+            }
+        }
+    </script>
+</body>
+</html>

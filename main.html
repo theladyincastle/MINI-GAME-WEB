@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main Menu - Mini Games</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+
+    <!-- FontAwesome 5.15.4 -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"
+      integrity="sha384-OpnYhciVxTpPQ5osE3ir71yAEmMMWfmd2j1n3a8uHqlG5b6wrb06dbkQOKzUpRga"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <style>
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            width: 100%;
+            transition: transform 0.2s, background 0.3s;
+            border-radius: 8px;
+        }
+
+        .sidebar-item i {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-text {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Make sidebar item text visible on hover and when sidebar expands */
+        .sidebar-item:hover .sidebar-text {
+            opacity: 1;
+        }
+
+        /* Sidebar expands on hover */
+        .sidebar:hover {
+            width: 12rem; /* Adjust width as needed */
+        }
+
+        .sidebar-item:hover {
+            background-color: #4b5563;
+        }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: black;
+            text-align: center;
+            width: 180px;
+            height: 100px;
+        }
+
+        .game-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+    </style> -->
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #1a0033, #6a00ff);
+        background-attachment: fixed;
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+      .sidebar {
+        width: 4rem;
+        transition: width 0.3s ease-in-out;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .sidebar:hover {
+        width: 12rem;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        width: 100%;
+        border-radius: 8px;
+        transition: transform 0.2s, background 0.3s;
+        position: relative;
+      }
+
+      .sidebar-text {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .sidebar:hover .sidebar-text {
+        opacity: 1;
+      }
+
+      .game-card {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: rgb(0, 0, 0);
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+      }
+      .game-card:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        color: black; /* Warna teks jadi hitam agar tetap terlihat */
+      }
+
+      .neon-text {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080,
+          0 0 40px #ff0080;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex">
+    <!-- Sidebar -->
+    <div
+      class="sidebar w-16 hover:w-48 transition-all duration-300 bg-gray-900 bg-opacity-80 text-white h-screen fixed flex flex-col items-center py-5 space-y-6"
+    >
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-gamepad"></i>
+        <span class="sidebar-text">Home</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-trophy"></i>
+        <span class="sidebar-text">Leaderboard</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-cog"></i>
+        <span class="sidebar-text">Settings</span>
+      </a>
+    </div>
+
+    <!-- Main Content -->
+    <div
+      class="flex-1 ml-16 flex flex-col items-center justify-center min-h-screen"
+    >
+      <h1 class="text-4xl font-bold neon-text mb-6">🎮 Pilih Game Kamu!</h1>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Game Cards -->
+        <a href="wheel-of-fortune.html" class="game-card"
+          >🎡 Wheel of Fortune</a
+        >
+        <a href="scratch-and-win.html" class="game-card">🎫 Scratch & Win</a>
+        <a href="dice-roll.html" class="game-card">🎲 Dice Roll</a>
+        <a href="pick-a-box.html" class="game-card">🎁 Pick a Box</a>
+        <a href="memory-card.html" class="game-card">🃏 Memory Card</a>
+        <a href="balloon-pops.html" class="game-card">🎈 Balloon Pops</a>
+        <a href="slot-machine.html" class="game-card">🎰 Slot Machine</a>
+        <a href="word-guess.html" class="game-card">🔤 Word Guessing</a>
+        <a href="lucky-number.html" class="game-card">🍀 Lucky Number</a>
+        <a href="rock-paper-scissors.html" class="game-card"
+          >✊✋✌ Rock-Paper-Scissors</a
+        >
+        <a href="mole-whack.html" class="game-card">🐭🔨 Mole Whack</a>
+        <a href="tic-tac-toe.html" class="game-card">❌⭕ Tic Tac Toe</a>
+        <a href="flappy-bird.html" class="game-card">🐦 Flappy Bird</a>
+        <a href="tetris.html" class="game-card">🟦 Tetris</a>
+        <a href="snake-game.html" class="game-card">🐍 Snake Game</a>
+        <a href="maze-game.html" class="game-card">🌀 Maze Game</a>
+        <a href="dino-run.html" class="game-card">🦖 Dino Run</a>
+        <a href="target-shooter.html" class="game-card">🎯 Target Shooter</a>
+        <a href="basketball-shot.html" class="game-card">🏀 Basketball Shot</a>
+        <a href="car-avoidance.html" class="game-card">🚗 Car Avoidance</a>
+        <a href="music-tiles.html" class="game-card">🎵 Music Tiles</a>
+        <a href="archery-challenge.html" class="game-card"
+          >🏹 Archery Challenge</a
+        >
+        <a href="surfing-race.html" class="game-card">🌊 Surfing Race</a>
+        <a href="escape-room.html" class="game-card">🔦 Escape Room</a>
+        <a href="fishing-frenzy.html" class="game-card">🎣 Fishing Frenzy</a>
+        <a href="mini-racing.html" class="game-card">🏎️ Mini Racing</a>
+        <a href="mine-sweeper.html" class="game-card">💣 Mine Sweeper</a>
+      </div>
+    </div>
+  </body>
+</html>

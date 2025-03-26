@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #1E1E1E;
+            color: white;
+        }
+        canvas {
+            background: black;
+            display: block;
+            margin: auto;
+        }
+        #score {
+            font-size: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🟦 Tetris</h1>
+    <p id="score">Score: 0</p>
+    <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+    
+    <script>
+        const canvas = document.getElementById("tetrisCanvas");
+        const ctx = canvas.getContext("2d");
+        const ROWS = 20, COLUMNS = 10, SIZE = 30;
+        const board = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
+        const tetrominoes = [
+            [[1, 1, 1, 1]], // I
+            [[1, 1], [1, 1]], // O
+            [[0, 1, 0], [1, 1, 1]], // T
+            [[1, 1, 0], [0, 1, 1]], // Z
+            [[0, 1, 1], [1, 1, 0]], // S
+            [[1, 1, 1], [1, 0, 0]], // L
+            [[1, 1, 1], [0, 0, 1]] // J
+        ];
+
+        let currentPiece = createPiece(), position = { x: 3, y: 0 }, score = 0;
+        function createPiece() {
+            const shape = tetrominoes[Math.floor(Math.random() * tetrominoes.length)];
+            return shape;
+        }
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            board.forEach((row, y) => row.forEach((value, x) => {
+                if (value) drawSquare(x, y, "cyan");
+            }));
+            currentPiece.forEach((row, y) => row.forEach((value, x) => {
+                if (value) drawSquare(position.x + x, position.y + y, "red");
+            }));
+        }
+        function drawSquare(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * SIZE, y * SIZE, SIZE, SIZE);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(x * SIZE, y * SIZE, SIZE, SIZE);
+        }
+        function movePiece(dir) {
+            position.x += dir;
+            if (collision()) position.x -= dir;
+        }
+        function dropPiece() {
+            position.y++;
+            if (collision()) {
+                position.y--;
+                merge();
+                clearRows();
+                position = { x: 3, y: 0 };
+                currentPiece = createPiece();
+                if (collision()) alert("Game Over!");
+            }
+        }
+        function collision() {
+            return currentPiece.some((row, y) =>
+                row.some((value, x) =>
+                    value && (board[y + position.y]?.[x + position.x] !== 0)
+                )
+            );
+        }
+        function merge() {
+            currentPiece.forEach((row, y) => row.forEach((value, x) => {
+                if (value) board[position.y + y][position.x + x] = value;
+            }));
+        }
+        function clearRows() {
+            for (let y = ROWS - 1; y >= 0; y--) {
+                if (board[y].every(value => value)) {
+                    board.splice(y, 1);
+                    board.unshift(Array(COLUMNS).fill(0));
+                    score += 10;
+                    document.getElementById("score").innerText = "Score: " + score;
+                }
+            }
+        }
+        function rotatePiece() {
+            const rotated = currentPiece[0].map((_, i) => currentPiece.map(row => row[i])).reverse();
+            currentPiece = rotated;
+            if (collision()) currentPiece = rotated[0].map((_, i) => rotated.map(row => row[i])); // Undo rotation if invalid
+        }
+        document.addEventListener("keydown", event => {
+            if (event.code === "ArrowLeft") movePiece(-1);
+            if (event.code === "ArrowRight") movePiece(1);
+            if (event.code === "ArrowDown") dropPiece();
+            if (event.code === "ArrowUp") rotatePiece();
+        });
+        setInterval(() => { dropPiece(); drawBoard(); }, 500);
+    </script>
+</body>
+</html>

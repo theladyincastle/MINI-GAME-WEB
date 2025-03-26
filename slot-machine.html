@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Machine Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .slots {
+            display: flex;
+            gap: 10px;
+        }
+        .slot {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: lightgray;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-green-100">
+    <div class="slot-machine">
+        <h1 class="text-2xl font-bold">Slot Machine 🎰</h1>
+        <div class="slots">
+            <div class="slot" id="slot1">🍒</div>
+            <div class="slot" id="slot2">🍋</div>
+            <div class="slot" id="slot3">🍊</div>
+        </div>
+        <button onclick="spinSlots()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Putar 🎰</button>
+        <p id="result" class="text-lg font-bold mt-2"></p>
+    </div>
+
+    <script>
+        const symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "🍇"];
+        
+        function spinSlots() {
+            let slot1 = document.getElementById("slot1");
+            let slot2 = document.getElementById("slot2");
+            let slot3 = document.getElementById("slot3");
+            let resultText = document.getElementById("result");
+            
+            let spin1 = symbols[Math.floor(Math.random() * symbols.length)];
+            let spin2 = symbols[Math.floor(Math.random() * symbols.length)];
+            let spin3 = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            slot1.textContent = spin1;
+            slot2.textContent = spin2;
+            slot3.textContent = spin3;
+            
+            if (spin1 === spin2 && spin2 === spin3) {
+                resultText.textContent = "🎉 Selamat! Anda Menang! 🎉";
+                resultText.classList.add("text-green-600");
+            } else {
+                resultText.textContent = "Coba lagi!";
+                resultText.classList.remove("text-green-600");
+            }
+        }
+    </script>
+</body>
+</html>

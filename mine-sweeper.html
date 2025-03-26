@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mine Sweeper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        #gameBoard {
+            display: grid;
+            grid-template-columns: repeat(10, 30px);
+            gap: 2px;
+            justify-content: center;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #ccc;
+            width: fit-content;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
+            background-color: #ddd;
+            border: 1px solid #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .cell.clicked {
+            background-color: #fff;
+        }
+        .cell.mine {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>💣 Mine Sweeper 🚩</h1>
+    <p>Klik kotak untuk membuka, jangan kena bom!</p>
+    <div id="gameBoard"></div>
+    <button onclick="resetGame()">Restart</button>
+
+    <script>
+        const boardSize = 10;
+        const mineCount = 15;
+        let board = [];
+        let gameOver = false;
+
+        function createBoard() {
+            board = [];
+            gameOver = false;
+            document.getElementById("gameBoard").innerHTML = "";
+            for (let i = 0; i < boardSize; i++) {
+                board[i] = [];
+                for (let j = 0; j < boardSize; j++) {
+                    board[i][j] = { mine: false, revealed: false, adjacentMines: 0 };
+                    let cell = document.createElement("div");
+                    cell.className = "cell";
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener("click", () => revealCell(i, j));
+                    document.getElementById("gameBoard").appendChild(cell);
+                }
+            }
+            placeMines();
+        }
+
+        function placeMines() {
+            let minesPlaced = 0;
+            while (minesPlaced < mineCount) {
+                let row = Math.floor(Math.random() * boardSize);
+                let col = Math.floor(Math.random() * boardSize);
+                if (!board[row][col].mine) {
+                    board[row][col].mine = true;
+                    minesPlaced++;
+                }
+            }
+            calculateNumbers();
+        }
+
+        function calculateNumbers() {
+            for (let i = 0; i < boardSize; i++) {
+                for (let j = 0; j < boardSize; j++) {
+                    if (board[i][j].mine) continue;
+                    let count = 0;
+                    for (let x = -1; x <= 1; x++) {
+                        for (let y = -1; y <= 1; y++) {
+                            let newRow = i + x;
+                            let newCol = j + y;
+                            if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize) {
+                                if (board[newRow][newCol].mine) count++;
+                            }
+                        }
+                    }
+                    board[i][j].adjacentMines = count;
+                }
+            }
+        }
+
+        function revealCell(row, col) {
+            if (gameOver || board[row][col].revealed) return;
+
+            let cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            board[row][col].revealed = true;
+            cell.classList.add("clicked");
+
+            if (board[row][col].mine) {
+                cell.classList.add("mine");
+                cell.textContent = "💥";
+                gameOver = true;
+                alert("Game Over! Kamu kena bom! 💣");
+            } else {
+                if (board[row][col].adjacentMines > 0) {
+                    cell.textContent = board[row][col].adjacentMines;
+                } else {
+                    // Auto-reveal area kosong
+                    for (let x = -1; x <= 1; x++) {
+                        for (let y = -1; y <= 1; y++) {
+                            let newRow = row + x;
+                            let newCol = col + y;
+                            if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize) {
+                                revealCell(newRow, newCol);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function resetGame() {
+            createBoard();
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>

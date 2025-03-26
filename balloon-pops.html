@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balloon Pop Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .balloon {
+            width: 60px;
+            height: 80px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-blue-100 relative overflow-hidden">
+    <h1 class="text-2xl font-bold mb-4">Balloon Pop Game 🎈</h1>
+    <p class="text-lg">Klik balon untuk meletuskannya!</p>
+    <div id="game-container" class="w-full h-screen absolute top-0 left-0"></div>
+    
+    <script>
+        function createBalloon() {
+            const balloon = document.createElement("div");
+            balloon.classList.add("balloon");
+            balloon.style.left = `${Math.random() * 90}vw`;
+            balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            document.getElementById("game-container").appendChild(balloon);
+            
+            let moveUp = setInterval(() => {
+                let currentBottom = parseInt(getComputedStyle(balloon).bottom);
+                if (currentBottom < window.innerHeight) {
+                    balloon.style.bottom = `${currentBottom + 5}px`;
+                } else {
+                    clearInterval(moveUp);
+                    balloon.remove();
+                }
+            }, 50);
+            
+            balloon.addEventListener("click", () => {
+                clearInterval(moveUp);
+                balloon.style.transform = "scale(0)";
+                setTimeout(() => balloon.remove(), 200);
+            });
+        }
+        
+        setInterval(createBalloon, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Racing Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #444;
+            color: white;
+        }
+        canvas {
+            background-color: #222;
+            display: block;
+            margin: auto;
+            border: 3px solid white;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏎️ Mini Racing - Hindari Rintangan!</h1>
+    <canvas id="gameCanvas"></canvas>
+    <h2>Score: <span id="score">0</span></h2>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreDisplay = document.getElementById("score");
+
+        canvas.width = 400;
+        canvas.height = 500;
+
+        let car = { x: 180, y: 400, width: 40, height: 60 };
+        let obstacles = [];
+        let score = 0;
+        let gameOver = false;
+
+        function createObstacle() {
+            return {
+                x: Math.random() * 350,
+                y: -50,
+                width: 50,
+                height: 60,
+                speed: Math.random() * 3 + 2
+            };
+        }
+
+        function drawCar() {
+            ctx.fillStyle = "red";
+            ctx.fillRect(car.x, car.y, car.width, car.height);
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = "white";
+            obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+        }
+
+        function checkCollision(obj1, obj2) {
+            return (
+                obj1.x < obj2.x + obj2.width &&
+                obj1.x + obj1.width > obj2.x &&
+                obj1.y < obj2.y + obj2.height &&
+                obj1.y + obj1.height > obj2.y
+            );
+        }
+
+        function update() {
+            if (gameOver) {
+                ctx.fillStyle = "red";
+                ctx.font = "30px Arial";
+                ctx.fillText("Game Over!", 130, 250);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawCar();
+            drawObstacles();
+
+            obstacles.forEach((obstacle, index) => {
+                obstacle.y += obstacle.speed;
+
+                if (checkCollision(car, obstacle)) {
+                    gameOver = true;
+                }
+
+                if (obstacle.y > canvas.height) {
+                    obstacles.splice(index, 1);
+                    score++;
+                    scoreDisplay.textContent = score;
+                    obstacles.push(createObstacle());
+                }
+            });
+
+            requestAnimationFrame(update);
+        }
+
+        // Kontrol mobil
+        window.addEventListener("keydown", function(e) {
+            if (e.key === "ArrowLeft" && car.x > 0) {
+                car.x -= 20;
+            }
+            if (e.key === "ArrowRight" && car.x < canvas.width - car.width) {
+                car.x += 20;
+            }
+        });
+
+        // Generate rintangan awal
+        for (let i = 0; i < 3; i++) {
+            obstacles.push(createObstacle());
+        }
+
+        update();
+    </script>
+</body>
+</html>

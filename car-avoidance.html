@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Avoidance Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #222;
+        }
+        canvas {
+            display: block;
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        
+        canvas.width = 400;
+        canvas.height = 600;
+
+        let player = { x: 175, y: 500, width: 50, height: 80, color: "blue" };
+        let obstacles = [];
+        let speed = 5;
+        let gameOver = false;
+
+        function drawCar(car) {
+            ctx.fillStyle = car.color;
+            ctx.fillRect(car.x, car.y, car.width, car.height);
+        }
+
+        function createObstacle() {
+            let x = Math.random() * (canvas.width - 50);
+            obstacles.push({ x, y: -100, width: 50, height: 80, color: "red" });
+        }
+
+        function moveObstacles() {
+            for (let obs of obstacles) {
+                obs.y += speed;
+                if (obs.y > canvas.height) {
+                    obstacles.shift();
+                }
+                if (
+                    obs.x < player.x + player.width &&
+                    obs.x + obs.width > player.x &&
+                    obs.y < player.y + player.height &&
+                    obs.y + obs.height > player.y
+                ) {
+                    gameOver = true;
+                }
+            }
+        }
+
+        function update() {
+            if (gameOver) {
+                ctx.fillStyle = "white";
+                ctx.font = "30px Arial";
+                ctx.fillText("Game Over!", 130, 300);
+                return;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCar(player);
+            moveObstacles();
+            for (let obs of obstacles) drawCar(obs);
+            requestAnimationFrame(update);
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowLeft" && player.x > 0) player.x -= 30;
+            if (event.key === "ArrowRight" && player.x < canvas.width - player.width) player.x += 30;
+        });
+
+        setInterval(createObstacle, 2000);
+        update();
+    </script>
+</body>
+</html>

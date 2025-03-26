@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheel of Fortune</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #000;
+            position: relative;
+            overflow: hidden;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+        .wheel div {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: red;
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            transform-origin: 100% 100%;
+        }
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid red;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h1 class="text-2xl font-bold mb-4">Wheel of Fortune</h1>
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel">
+                <div style="background: #ff0000; transform: rotate(0deg);"></div>
+                <div style="background: #ff8000; transform: rotate(45deg);"></div>
+                <div style="background: #ffff00; transform: rotate(90deg);"></div>
+                <div style="background: #80ff00; transform: rotate(135deg);"></div>
+                <div style="background: #00ff80; transform: rotate(180deg);"></div>
+                <div style="background: #0080ff; transform: rotate(225deg);"></div>
+                <div style="background: #8000ff; transform: rotate(270deg);"></div>
+                <div style="background: #ff0080; transform: rotate(315deg);"></div>
+            </div>
+        </div>
+        <button onclick="spinWheel()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Putar Roda</button>
+        <h2 class="mt-4 text-xl font-semibold">Pemenang 1:</h2>
+        <p id="winner1" class="text-lg text-green-600 font-bold mt-2"></p>
+        <h2 class="mt-4 text-xl font-semibold">Pemenang 2:</h2>
+        <p id="winner2" class="text-lg text-green-600 font-bold mt-2"></p>
+    </div>
+
+    <script>
+        let winners = ["Hadiah 1", "Hadiah 2", "Hadiah 3", "Hadiah 4", "Hadiah 5", "Hadiah 6", "Hadiah 7", "Hadiah 8"];
+        let previousWinners = [];
+        
+        function spinWheel() {
+            let wheel = document.getElementById("wheel");
+            let degrees = 1800 + Math.floor(Math.random() * 360);
+            wheel.style.transition = "transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67)";
+            wheel.style.transform = `rotate(${degrees}deg)`;
+            
+            setTimeout(() => {
+                let index = Math.floor(((degrees % 360) / 45));
+                let winner = winners[index];
+                
+                if (!previousWinners.includes(winner)) {
+                    previousWinners.push(winner);
+                }
+                
+                document.getElementById("winner1").innerText = previousWinners[0] || "Belum ada pemenang";
+                document.getElementById("winner2").innerText = previousWinners[1] || "Belum ada pemenang";
+                
+                if (previousWinners.length > 2) {
+                    previousWinners.shift();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

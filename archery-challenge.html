@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archery Challenge</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+            background: skyblue;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background: lightgreen;
+            display: block;
+            margin: auto;
+        }
+        h1 {
+            font-size: 24px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏹 Archery Challenge - Tembak target!</h1>
+    <canvas id="gameCanvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = 800;
+        canvas.height = 400;
+
+        let target = { x: 700, y: Math.random() * 300 + 50, width: 50, height: 50 };
+        let arrow = { x: 50, y: canvas.height / 2, width: 40, height: 10, speed: 0, flying: false };
+        let score = 0;
+
+        function drawTarget() {
+            ctx.fillStyle = "red";
+            ctx.fillRect(target.x, target.y, target.width, target.height);
+        }
+
+        function drawArrow() {
+            ctx.fillStyle = "brown";
+            ctx.fillRect(arrow.x, arrow.y, arrow.width, arrow.height);
+        }
+
+        function moveTarget() {
+            target.y += Math.sin(Date.now() / 500) * 3; // Bergerak naik turun
+        }
+
+        function moveArrow() {
+            if (arrow.flying) {
+                arrow.x += arrow.speed;
+                if (arrow.x > canvas.width) {
+                    resetArrow();
+                }
+                if (arrow.x + arrow.width >= target.x &&
+                    arrow.y >= target.y &&
+                    arrow.y <= target.y + target.height) {
+                    score++;
+                    resetArrow();
+                    target.y = Math.random() * 300 + 50;
+                }
+            }
+        }
+
+        function resetArrow() {
+            arrow.x = 50;
+            arrow.flying = false;
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawTarget();
+            drawArrow();
+            moveTarget();
+            moveArrow();
+            ctx.fillStyle = "black";
+            ctx.fillText("Score: " + score, 10, 20);
+            requestAnimationFrame(update);
+        }
+
+        canvas.addEventListener("click", function(event) {
+            if (!arrow.flying) {
+                arrow.flying = true;
+                arrow.speed = 5;
+                arrow.y = event.clientY - canvas.getBoundingClientRect().top;
+            }
+        });
+
+        update();
+    </script>
+</body>
+</html>

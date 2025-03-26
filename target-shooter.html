@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Shooter</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+        }
+        canvas {
+            border: 2px solid black;
+            background-color: white;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Target Shooter</h1>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <p>Score: <span id="score">0</span></p>
+    <button onclick="startGame()">Start Game</button>
+    
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let score = 0;
+        let targetX, targetY;
+        let gameInterval;
+
+        function drawTarget() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            targetX = Math.random() * (canvas.width - 50);
+            targetY = Math.random() * (canvas.height - 50);
+            ctx.beginPath();
+            ctx.arc(targetX + 25, targetY + 25, 25, 0, Math.PI * 2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function startGame() {
+            score = 0;
+            document.getElementById("score").innerText = score;
+            gameInterval = setInterval(drawTarget, 1000);
+            setTimeout(() => clearInterval(gameInterval), 30000); // Game lasts 30s
+        }
+
+        canvas.addEventListener("click", function (event) {
+            const clickX = event.offsetX;
+            const clickY = event.offsetY;
+            const dist = Math.sqrt(Math.pow(clickX - (targetX + 25), 2) + Math.pow(clickY - (targetY + 25), 2));
+            if (dist < 25) {
+                score++;
+                document.getElementById("score").innerText = score;
+                drawTarget();
+            }
+        });
+    </script>
+</body>
+</html>

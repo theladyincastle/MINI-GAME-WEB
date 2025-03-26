@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishing Frenzy</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #87CEEB;
+        }
+        canvas {
+            background-color: #1E90FF;
+            display: block;
+            margin: auto;
+            border: 2px solid black;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎣 Fishing Frenzy - Tangkap Ikan!</h1>
+    <canvas id="gameCanvas"></canvas>
+    <h2>Score: <span id="score">0</span></h2>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreDisplay = document.getElementById("score");
+
+        canvas.width = 600;
+        canvas.height = 400;
+
+        let fisherman = { x: 280, y: 350, width: 40, height: 40 };
+        let hook = { x: fisherman.x + 15, y: fisherman.y, width: 10, height: 20, dropping: false };
+        let fishes = [];
+        let score = 0;
+
+        function createFish() {
+            return {
+                x: Math.random() * 550,
+                y: Math.random() * 250 + 50,
+                width: 30,
+                height: 20,
+                speed: Math.random() * 2 + 1
+            };
+        }
+
+        function drawFisherman() {
+            ctx.fillStyle = "brown";
+            ctx.fillRect(fisherman.x, fisherman.y, fisherman.width, fisherman.height);
+        }
+
+        function drawHook() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(hook.x, hook.y, hook.width, hook.height);
+        }
+
+        function drawFishes() {
+            ctx.fillStyle = "orange";
+            fishes.forEach(fish => {
+                ctx.fillRect(fish.x, fish.y, fish.width, fish.height);
+            });
+        }
+
+        function checkCollision(obj1, obj2) {
+            return (
+                obj1.x < obj2.x + obj2.width &&
+                obj1.x + obj1.width > obj2.x &&
+                obj1.y < obj2.y + obj2.height &&
+                obj1.y + obj1.height > obj2.y
+            );
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawFisherman();
+            drawHook();
+            drawFishes();
+
+            // Update ikan bergerak
+            fishes.forEach(fish => {
+                fish.x += fish.speed;
+                if (fish.x > canvas.width) fish.x = -fish.width;
+            });
+
+            // Pergerakan pancing
+            if (hook.dropping) {
+                hook.y += 4;
+                if (hook.y > canvas.height) hook.dropping = false;
+            } else {
+                hook.y = fisherman.y;
+                hook.x = fisherman.x + 15;
+            }
+
+            // Cek apakah hook menangkap ikan
+            fishes.forEach((fish, index) => {
+                if (checkCollision(hook, fish)) {
+                    score++;
+                    scoreDisplay.textContent = score;
+                    fishes.splice(index, 1);
+                    fishes.push(createFish()); // Tambah ikan baru
+                    hook.dropping = false;
+                    hook.y = fisherman.y;
+                }
+            });
+
+            requestAnimationFrame(update);
+        }
+
+        // Kontrol Fisherman & Hook
+        window.addEventListener("keydown", function(e) {
+            if (e.key === "ArrowLeft" && fisherman.x > 0) {
+                fisherman.x -= 20;
+            }
+            if (e.key === "ArrowRight" && fisherman.x < canvas.width - fisherman.width) {
+                fisherman.x += 20;
+            }
+            if (e.key === " " && !hook.dropping) { // Tekan spasi untuk memancing
+                hook.dropping = true;
+            }
+        });
+
+        // Generate ikan awal
+        for (let i = 0; i < 5; i++) {
+            fishes.push(createFish());
+        }
+
+        update();
+    </script>
+</body>
+</html>

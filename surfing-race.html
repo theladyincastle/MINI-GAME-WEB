@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surfing Race</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+            background: skyblue;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background: lightblue;
+            display: block;
+            margin: auto;
+            border-bottom: 5px solid darkblue;
+        }
+        h1 {
+            font-size: 24px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌊 Surfing Race - Hindari rintangan!</h1>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = 800;
+        canvas.height = 400;
+
+        let surfer = { x: 100, y: 200, width: 50, height: 50, speed: 5 };
+        let obstacles = [];
+        let score = 0;
+        let gameOver = false;
+
+        function drawSurfer() {
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(surfer.x, surfer.y, surfer.width, surfer.height);
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = "red";
+            obstacles.forEach(obs => {
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+            });
+        }
+
+        function moveObstacles() {
+            obstacles.forEach(obs => {
+                obs.x -= 4;
+            });
+
+            obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+        }
+
+        function checkCollision() {
+            obstacles.forEach(obs => {
+                if (
+                    surfer.x < obs.x + obs.width &&
+                    surfer.x + surfer.width > obs.x &&
+                    surfer.y < obs.y + obs.height &&
+                    surfer.y + surfer.height > obs.y
+                ) {
+                    gameOver = true;
+                }
+            });
+        }
+
+        function spawnObstacle() {
+            let size = Math.random() * 40 + 20;
+            let yPos = Math.random() * (canvas.height - size);
+            obstacles.push({ x: canvas.width, y: yPos, width: size, height: size });
+        }
+
+        function update() {
+            if (gameOver) {
+                ctx.fillStyle = "black";
+                ctx.font = "30px Arial";
+                ctx.fillText("Game Over! Refresh to play again", 200, 200);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSurfer();
+            drawObstacles();
+            moveObstacles();
+            checkCollision();
+
+            ctx.fillStyle = "black";
+            ctx.fillText("Score: " + score, 10, 20);
+            score++;
+
+            requestAnimationFrame(update);
+        }
+
+        window.addEventListener("keydown", function(e) {
+            if (e.key === "ArrowUp" && surfer.y > 0) {
+                surfer.y -= surfer.speed;
+            }
+            if (e.key === "ArrowDown" && surfer.y + surfer.height < canvas.height) {
+                surfer.y += surfer.speed;
+            }
+        });
+
+        setInterval(spawnObstacle, 1500);
+        update();
+    </script>
+</body>
+</html>

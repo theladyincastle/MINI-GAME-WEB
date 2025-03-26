@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Tiles</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #gameCanvas {
+            background: white;
+            display: block;
+            margin: auto;
+        }
+        h1 {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 Music Tiles - Klik ubin hitam!</h1>
+    <canvas id="gameCanvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = 300;
+        canvas.height = 500;
+
+        let tiles = [];
+        let speed = 2;
+        let score = 0;
+
+        function createTile() {
+            let x = Math.floor(Math.random() * 4) * 75;
+            tiles.push({ x, y: -100, width: 75, height: 100, clicked: false });
+        }
+
+        function drawTiles() {
+            ctx.fillStyle = "black";
+            for (let tile of tiles) {
+                ctx.fillRect(tile.x, tile.y, tile.width, tile.height);
+            }
+        }
+
+        function moveTiles() {
+            for (let tile of tiles) {
+                tile.y += speed;
+            }
+            if (tiles.length > 0 && tiles[0].y > canvas.height) {
+                alert("Game Over! Skor: " + score);
+                tiles = [];
+                score = 0;
+            }
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawTiles();
+            moveTiles();
+            requestAnimationFrame(update);
+        }
+
+        canvas.addEventListener("click", function (event) {
+            let rect = canvas.getBoundingClientRect();
+            let x = event.clientX - rect.left;
+            let y = event.clientY - rect.top;
+
+            for (let tile of tiles) {
+                if (
+                    x > tile.x &&
+                    x < tile.x + tile.width &&
+                    y > tile.y &&
+                    y < tile.y + tile.height &&
+                    !tile.clicked
+                ) {
+                    tile.clicked = true;
+                    tiles.splice(tiles.indexOf(tile), 1);
+                    score++;
+                }
+            }
+        });
+
+        setInterval(createTile, 1000);
+        update();
+    </script>
+</body>
+</html>

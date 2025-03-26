@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tebak Kata</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .letter {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-bottom: 2px solid black;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-blue-100">
+    <div class="text-center bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold">Tebak Kata</h1>
+        <div id="word-container" class="mt-4"></div>
+        <input type="text" id="guess" maxlength="1" class="border px-2 py-1 mt-4" placeholder="Masukkan huruf">
+        <button onclick="checkGuess()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2">Tebak</button>
+        <p id="message" class="mt-4 font-bold"></p>
+    </div>
+    
+    <script>
+        const words = ["KUCING", "BUNGA", "SEPEDA", "LAMPU", "BOLA"];
+        let selectedWord = words[Math.floor(Math.random() * words.length)];
+        let guessedLetters = new Array(selectedWord.length).fill("_");
+        
+        function displayWord() {
+            document.getElementById("word-container").innerHTML = guessedLetters.map(letter => `<span class='letter'>${letter}</span>`).join(" ");
+        }
+        
+        function checkGuess() {
+            let guess = document.getElementById("guess").value.toUpperCase();
+            document.getElementById("guess").value = "";
+            
+            if (guess && selectedWord.includes(guess)) {
+                for (let i = 0; i < selectedWord.length; i++) {
+                    if (selectedWord[i] === guess) {
+                        guessedLetters[i] = guess;
+                    }
+                }
+            }
+            
+            displayWord();
+            
+            if (!guessedLetters.includes("_")) {
+                document.getElementById("message").textContent = "🎉 Selamat! Anda Menang! 🎉";
+            }
+        }
+        
+        displayWord();
+    </script>
+</body>
+</html>

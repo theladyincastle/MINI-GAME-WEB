@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock-Paper-Scissors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .game-container {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .choice {
+            font-size: 3rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .choice:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-blue-100">
+    <div class="game-container">
+        <h1 class="text-2xl font-bold mb-4">Gunting-Batu-Kertas ✊✋✌</h1>
+        <div class="choices">
+            <div class="choice" onclick="playGame('rock')">✊</div>
+            <div class="choice" onclick="playGame('paper')">✋</div>
+            <div class="choice" onclick="playGame('scissors')">✌</div>
+        </div>
+        <p id="result" class="text-lg font-bold mt-4"></p>
+    </div>
+
+    <script>
+        function playGame(playerChoice) {
+            const choices = ["rock", "paper", "scissors"];
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+            let resultText = "";
+
+            if (playerChoice === computerChoice) {
+                resultText = "🤝 Seri!";
+            } else if (
+                (playerChoice === "rock" && computerChoice === "scissors") ||
+                (playerChoice === "paper" && computerChoice === "rock") ||
+                (playerChoice === "scissors" && computerChoice === "paper")
+            ) {
+                resultText = "🎉 Kamu Menang!";
+            } else {
+                resultText = "😢 Kamu Kalah!";
+            }
+
+            document.getElementById("result").textContent = `Komputer: ${getEmoji(computerChoice)} | ${resultText}`;
+        }
+
+        function getEmoji(choice) {
+            return choice === "rock" ? "✊" : choice === "paper" ? "✋" : "✌";
+        }
+    </script>
+</body>
+</html>

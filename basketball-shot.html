@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Shoot</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f4a261;
+        }
+        canvas {
+            background-color: #264653;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏀 Basketball Shoot 🏀</h1>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let ball = { x: 200, y: 550, radius: 10, dx: 0, dy: 0, isMoving: false };
+        let hoop = { x: 150, y: 100, width: 100, height: 10 };
+        let gravity = 0.3;
+        let score = 0;
+
+        function drawHoop() {
+            ctx.fillStyle = "red";
+            ctx.fillRect(hoop.x, hoop.y, hoop.width, hoop.height);
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "orange";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function updateBall() {
+            if (ball.isMoving) {
+                ball.dy += gravity;
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                if (ball.y > canvas.height - ball.radius) {
+                    ball.isMoving = false;
+                    ball.y = canvas.height - ball.radius;
+                }
+
+                if (
+                    ball.y - ball.radius < hoop.y + hoop.height &&
+                    ball.x > hoop.x &&
+                    ball.x < hoop.x + hoop.width
+                ) {
+                    score++;
+                    resetBall();
+                }
+            }
+        }
+
+        function resetBall() {
+            ball.x = 200;
+            ball.y = 550;
+            ball.dx = 0;
+            ball.dy = 0;
+            ball.isMoving = false;
+        }
+
+        function drawScore() {
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText("Score: " + score, 10, 30);
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawHoop();
+            drawBall();
+            drawScore();
+            updateBall();
+            requestAnimationFrame(gameLoop);
+        }
+
+        canvas.addEventListener("click", function () {
+            if (!ball.isMoving) {
+                ball.dy = -8;
+                ball.dx = (Math.random() - 0.5) * 4;
+                ball.isMoving = true;
+            }
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
